@@ -2,6 +2,9 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 
+// Bolivia timezone — set in code since Vercel reserves TZ env var
+process.env.TZ = 'America/La_Paz';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
