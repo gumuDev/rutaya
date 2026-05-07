@@ -1,0 +1,124 @@
+{
+  "common": {
+    "appName": "RutaYa",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "actions": "Actions"
+  },
+  "auth": {
+    "login": "Sign in",
+    "register": "Register company",
+    "email": "Email",
+    "password": "Password",
+    "passwordMin": "At least 8 characters",
+    "companyName": "Company name",
+    "phone": "Phone",
+    "city": "City",
+    "taxId": "Tax ID (optional)",
+    "loginSubmit": "Sign in",
+    "registerSubmit": "Create account",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "errors": {
+      "email_already_registered": "This email is already registered",
+      "invalid_credentials": "Invalid email or password",
+      "register_failed": "Failed to register company",
+      "login_failed": "Failed to sign in"
+    }
+  },
+  "nav": {
+    "reservations": "Reservations",
+    "vehicles": "Vehicles",
+    "routes": "Routes",
+    "schedules": "Schedules",
+    "logout": "Sign out"
+  },
+  "vehicles": {
+    "title": "Vehicles",
+    "add": "Add vehicle",
+    "edit": "Edit vehicle",
+    "plate": "Plate",
+    "type": "Vehicle type",
+    "serviceType": "Service type",
+    "capacity": "Capacity",
+    "capacitySeats": "{count} passengers",
+    "deleteConfirm": "Delete this vehicle?",
+    "empty": "No vehicles registered yet.",
+    "types": {
+      "trufi": "Trufi",
+      "minibus": "Minibus",
+      "bus": "Bus / Flota"
+    },
+    "typeHint": {
+      "trufi": "Reserve by passenger count",
+      "minibus": "Reserve by available capacity",
+      "bus": "Seat map reservation"
+    },
+    "serviceTypes": {
+      "normal": "Normal (2+2)",
+      "semicama": "Semicama (2+2, reclining)",
+      "cama": "Cama (2+1, sleeper seats)",
+      "leito": "Leito (2+1 · 2 decks, full beds)"
+    },
+    "brand": "Brand",
+    "year": "Year",
+    "driverSection": "Driver info",
+    "driverName": "Driver name",
+    "driverPhone": "Driver phone",
+    "errors": {
+      "load_failed": "Failed to load vehicles",
+      "save_failed": "Failed to save vehicle",
+      "delete_failed": "Failed to delete vehicle"
+    }
+  },
+  "schedules": {
+    "title": "Schedules",
+    "add": "Add schedule",
+    "edit": "Edit schedule",
+    "route": "Route",
+    "vehicle": "Vehicle",
+    "departureTime": "Departure time",
+    "days": "Operating days",
+    "price": "Price (Bs.)",
+    "active": "Active",
+    "inactive": "Inactive",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "deleteConfirm": "Delete this schedule?",
+    "empty": "No schedules registered yet.",
+    "daysShort": {
+      "mon": "Mon", "tue": "Tue", "wed": "Wed", "thu": "Thu",
+      "fri": "Fri", "sat": "Sat", "sun": "Sun"
+    },
+    "errors": {
+      "load_failed": "Failed to load schedules",
+      "save_failed": "Failed to save schedule",
+      "delete_failed": "Failed to delete schedule"
+    }
+  },
+  "routes": {
+    "title": "Routes",
+    "add": "Add route",
+    "edit": "Edit route",
+    "origin": "Origin",
+    "destination": "Destination",
+    "basePrice": "Base price (Bs.)",
+    "deleteConfirm": "Delete this route?",
+    "deleteBlocked": "Cannot delete a route with active schedules",
+    "empty": "No routes registered yet.",
+    "errors": {
+      "load_failed": "Failed to load routes",
+      "save_failed": "Failed to save route",
+      "delete_failed": "Failed to delete route",
+      "route_has_active_schedules": "Cannot delete a route with active schedules"
+    }
+  }
+}

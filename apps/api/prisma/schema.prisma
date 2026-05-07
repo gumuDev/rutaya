@@ -1,0 +1,179 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum CompanyRole {
+  superadmin
+  admin
+  operator
+}
+
+enum VehicleType {
+  trufi
+  minibus
+  bus
+}
+
+enum ServiceType {
+  normal
+  semicama
+  cama
+  leito
+}
+
+model Company {
+  id              String      @id @default(cuid())
+  name            String
+  taxId           String?
+  phone           String
+  city            String
+  email           String      @unique
+  password        String
+  role            CompanyRole @default(admin)
+  parentCompanyId String?
+  logoUrl             String?
+  bankName            String?
+  bankAccount         String?
+  bankAccountHolder   String?
+  qrImageUrl          String?
+  telegramChatId      String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  vehicles  Vehicle[]
+  routes    Route[]
+  schedules Schedule[]
+
+  @@index([parentCompanyId])
+  @@map("companies")
+}
+
+
+model Vehicle {
+  id          String      @id @default(cuid())
+  plate       String
+  type        VehicleType
+  serviceType ServiceType @default(normal)
+  capacity    Int
+  brand       String?
+  year        Int?
+  driverName  String?
+  driverPhone String?
+  companyId   String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  company   Company     @relation(fields: [companyId], references: [id])
+  schedules Schedule[]
+
+  @@unique([plate, companyId])
+  @@index([companyId])
+  @@map("vehicles")
+}
+
+model Route {
+  id          String   @id @default(cuid())
+  origin      String
+  destination String
+  basePrice   Decimal  @db.Decimal(10, 2)
+  companyId   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  company     Company    @relation(fields: [companyId], references: [id])
+  schedules   Schedule[]
+
+  @@index([companyId])
+  @@map("routes")
+}
+
+model Schedule {
+  id          String   @id @default(cuid())
+  routeId     String
+  vehicleId   String
+  companyId   String
+  departureTime String
+  days        String[]
+  price       Decimal  @db.Decimal(10, 2)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  route       Route    @relation(fields: [routeId], references: [id])
+  vehicle     Vehicle  @relation(fields: [vehicleId], references: [id])
+  company     Company  @relation(fields: [companyId], references: [id])
+
+  reservations Reservation[]
+
+  @@index([companyId])
+  @@index([routeId])
+  @@map("schedules")
+}
+
+enum ReservationStatus {
+  pending_payment
+  pending
+  confirmed
+  cancelled
+  expired
+  boarded
+}
+
+enum PaymentMethod {
+  bank_transfer
+  qr
+  cash
+}
+
+model Reservation {
+  id             String            @id @default(cuid())
+  code           String            @unique
+  scheduleId     String
+  companyId      String
+  passengerName  String
+  passengerPhone String
+  quantity       Int
+  status         ReservationStatus @default(pending_payment)
+  paymentMethod  PaymentMethod?
+  proofImageUrl  String?
+  travelDate     String
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  expiresAt      DateTime
+
+  schedule       Schedule          @relation(fields: [scheduleId], references: [id])
+  seatReservations SeatReservation[]
+
+  @@index([companyId])
+  @@index([code])
+  @@index([passengerPhone])
+  @@map("reservations")
+}
+
+model City {
+  id         String @id @default(cuid())
+  name       String
+  department String
+
+  @@index([name])
+  @@map("cities")
+}
+
+model SeatReservation {
+  id            String      @id @default(cuid())
+  scheduleId    String
+  travelDate    String
+  seatNumber    Int
+  reservationId String
+
+  reservation   Reservation @relation(fields: [reservationId], references: [id])
+
+  @@unique([scheduleId, travelDate, seatNumber])
+  @@index([scheduleId, travelDate])
+  @@map("seat_reservations")
+}

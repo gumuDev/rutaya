@@ -1,0 +1,13 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+
+onlyBuiltDependencies:
+  - "@nestjs/core"
+  - "@parcel/watcher"
+  - "@prisma/engines"
+  - "@swc/core"
+  - bcrypt
+  - prisma
+  - sharp
+  - unrs-resolver

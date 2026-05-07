@@ -1,0 +1,255 @@
+{
+  "recover": {
+    "title": "Recuperar mi reserva",
+    "subtitle": "Ingresa el código de tu ticket",
+    "code": "Código de reserva",
+    "codePlaceholder": "Ej. ABC12345",
+    "search": "Buscar reserva",
+    "notFound": "No encontramos una reserva con ese código. Verifica que esté escrito correctamente.",
+    "backToHome": "Volver al inicio"
+  },
+  "reservations": {
+    "title": "Reservas",
+    "today": "Hoy",
+    "all": "Todas",
+    "code": "Código",
+    "passenger": "Pasajero",
+    "phone": "Teléfono",
+    "route": "Ruta",
+    "departure": "Salida",
+    "quantity": "Pax",
+    "status": "Estado",
+    "actions": "Acciones",
+    "confirm": "Confirmar",
+    "cancel": "Cancelar",
+    "board": "Abordar",
+    "empty": "No hay reservas.",
+    "filterByStatus": "Filtrar por estado",
+    "stats": {
+      "total": "Total hoy",
+      "pending": "Pendientes",
+      "confirmed": "Confirmadas",
+      "boarded": "Abordados"
+    },
+    "statuses": {
+      "pending_payment": "Esperando pago",
+      "pending": "Pago enviado",
+      "confirmed": "Confirmado",
+      "cancelled": "Cancelado",
+      "expired": "Expirado",
+      "boarded": "Abordado"
+    },
+    "errors": {
+      "load_failed": "Error al cargar reservas",
+      "action_failed": "Error al procesar la acción"
+    }
+  },
+  "ticket": {
+    "title": "Tu Ticket de Viaje",
+    "code": "Código de reserva",
+    "passenger": "Pasajero",
+    "phone": "Teléfono",
+    "route": "Ruta",
+    "departure": "Salida",
+    "company": "Empresa",
+    "quantity": "Pasajeros",
+    "total": "Total",
+    "status": "Estado",
+    "saveImage": "Guardar como imagen",
+    "copyCode": "Copiar código",
+    "shareWhatsapp": "Compartir por WhatsApp",
+    "codeCopied": "¡Código copiado!",
+    "recoverTicket": "Recuperar mi ticket",
+    "statuses": {
+      "pending_payment": "Esperando comprobante de pago",
+      "pending": "Pago enviado — esperando confirmación",
+      "confirmed": "Confirmado",
+      "cancelled": "Cancelado",
+      "expired": "Expirado",
+      "boarded": "Abordado"
+    }
+  },
+  "search": {
+    "title": "Busca tu pasaje",
+    "origin": "Origen",
+    "destination": "Destino",
+    "date": "Fecha de salida",
+    "passengers": "Número de pasajeros",
+    "search": "Buscar",
+    "results": "Viajes disponibles",
+    "noResults": "No hay viajes disponibles para esta búsqueda.",
+    "available": "{count} asientos disponibles",
+    "perPerson": "por persona",
+    "book": "Reservar",
+    "departure": "Salida"
+  },
+  "booking": {
+    "title": "Confirmar reserva",
+    "passengerName": "Nombre completo",
+    "passengerPhone": "Teléfono (WhatsApp)",
+    "quantity": "Cantidad de pasajeros",
+    "total": "Total",
+    "paymentMethod": "Método de pago",
+    "bankTransfer": "Depósito bancario",
+    "qr": "Pago por QR",
+    "step1": "Datos del pasajero",
+    "step2": "Instrucciones de pago",
+    "bankInstructions": "Realiza un depósito a la siguiente cuenta",
+    "qrInstructions": "Escanea el QR y realiza el pago",
+    "proofTitle": "Sube tu comprobante",
+    "proofImageUrl": "URL de la foto del comprobante",
+    "proofHelp": "Toma una foto del comprobante y sube la URL (usa WhatsApp > enviar imagen > copiar enlace, o imgur.com)",
+    "proofOptional": "Puedes subir el comprobante ahora o después desde tu ticket",
+    "confirm": "Confirmar y enviar comprobante",
+    "confirmWithoutProof": "Reservar sin comprobante",
+    "next": "Continuar al pago",
+    "back": "Volver",
+    "noPaymentConfigured": "Esta empresa no tiene métodos de pago configurados. Contacta directamente.",
+    "errors": {
+      "schedule_not_found": "El horario no existe",
+      "schedule_inactive": "Este horario ya no está disponible",
+      "insufficient_capacity": "No hay suficiente capacidad disponible",
+      "request_failed": "Error al crear la reserva"
+    }
+  },
+  "common": {
+    "appName": "RutaYa",
+    "loading": "Cargando...",
+    "error": "Ocurrió un error",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "back": "Volver",
+    "next": "Siguiente",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "add": "Agregar",
+    "actions": "Acciones"
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "register": "Registrar empresa",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "passwordMin": "Mínimo 8 caracteres",
+    "companyName": "Nombre de la empresa",
+    "phone": "Teléfono",
+    "city": "Ciudad",
+    "taxId": "NIT / RUC (opcional)",
+    "loginSubmit": "Ingresar",
+    "registerSubmit": "Crear cuenta",
+    "noAccount": "¿No tienes cuenta?",
+    "hasAccount": "¿Ya tienes cuenta?",
+    "errors": {
+      "email_already_registered": "Este correo ya está registrado",
+      "invalid_credentials": "Correo o contraseña incorrectos",
+      "register_failed": "Error al registrar la empresa",
+      "login_failed": "Error al iniciar sesión"
+    }
+  },
+  "nav": {
+    "reservations": "Reservas",
+    "vehicles": "Vehículos",
+    "routes": "Rutas",
+    "schedules": "Horarios",
+    "paymentConfig": "Pagos",
+    "logout": "Cerrar sesión"
+  },
+  "paymentConfig": {
+    "title": "Configuración de pagos",
+    "bankSection": "Transferencia bancaria",
+    "bankName": "Banco",
+    "bankAccount": "Número de cuenta",
+    "bankAccountHolder": "Titular de la cuenta",
+    "qrSection": "Pago por QR",
+    "qrImageUrl": "URL de imagen QR",
+    "qrHelp": "Pega la URL de tu imagen QR (puedes subirla a imgur.com u otro servicio)",
+    "qrPreview": "Vista previa del QR",
+    "telegramSection": "Notificaciones Telegram",
+    "telegramChatId": "Chat ID de Telegram",
+    "telegramHelp": "Escribe /start al bot @RutaYaBot en Telegram y copia el Chat ID que te envía",
+    "saved": "¡Configuración guardada!",
+    "save": "Guardar configuración",
+    "noPaymentMethods": "Configura al menos un método de pago para que los pasajeros puedan reservar."
+  },
+  "vehicles": {
+    "title": "Vehículos",
+    "add": "Agregar vehículo",
+    "edit": "Editar vehículo",
+    "plate": "Placa",
+    "type": "Tipo de vehículo",
+    "serviceType": "Tipo de servicio",
+    "capacity": "Capacidad",
+    "capacitySeats": "{count} pasajeros",
+    "deleteConfirm": "¿Eliminar este vehículo?",
+    "empty": "No tienes vehículos registrados.",
+    "types": {
+      "trufi": "Trufi",
+      "minibus": "Minibus",
+      "bus": "Bus / Flota"
+    },
+    "typeHint": {
+      "trufi": "Reserva por cantidad de pasajeros",
+      "minibus": "Reserva por capacidad disponible",
+      "bus": "Reserva con mapa de asientos"
+    },
+    "serviceTypes": {
+      "normal": "Normal (2+2)",
+      "semicama": "Semicama (2+2, reclinable)",
+      "cama": "Cama (2+1)",
+      "leito": "Leito (2+1 · 2 pisos)"
+    },
+    "brand": "Marca",
+    "year": "Año",
+    "driverSection": "Datos del chofer",
+    "driverName": "Nombre del chofer",
+    "driverPhone": "Teléfono del chofer",
+    "errors": {
+      "load_failed": "Error al cargar vehículos",
+      "save_failed": "Error al guardar el vehículo",
+      "delete_failed": "Error al eliminar el vehículo"
+    }
+  },
+  "schedules": {
+    "title": "Horarios",
+    "add": "Agregar horario",
+    "edit": "Editar horario",
+    "route": "Ruta",
+    "vehicle": "Vehículo",
+    "departureTime": "Hora de salida",
+    "days": "Días de operación",
+    "price": "Precio (Bs.)",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "activate": "Activar",
+    "deactivate": "Desactivar",
+    "deleteConfirm": "¿Eliminar este horario?",
+    "empty": "No tienes horarios registrados.",
+    "daysShort": {
+      "mon": "Lun", "tue": "Mar", "wed": "Mié", "thu": "Jue",
+      "fri": "Vie", "sat": "Sáb", "sun": "Dom"
+    },
+    "errors": {
+      "load_failed": "Error al cargar horarios",
+      "save_failed": "Error al guardar el horario",
+      "delete_failed": "Error al eliminar el horario"
+    }
+  },
+  "routes": {
+    "title": "Rutas",
+    "add": "Agregar ruta",
+    "edit": "Editar ruta",
+    "origin": "Origen",
+    "destination": "Destino",
+    "basePrice": "Precio base (Bs.)",
+    "deleteConfirm": "¿Eliminar esta ruta?",
+    "deleteBlocked": "No se puede eliminar una ruta con horarios activos",
+    "empty": "No tienes rutas registradas.",
+    "errors": {
+      "load_failed": "Error al cargar rutas",
+      "save_failed": "Error al guardar la ruta",
+      "delete_failed": "Error al eliminar la ruta",
+      "route_has_active_schedules": "No se puede eliminar una ruta con horarios activos"
+    }
+  }
+}
