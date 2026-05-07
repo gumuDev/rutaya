@@ -10,7 +10,14 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
-  app.enableCors();
+  app.enableCors({
+    origin: [
+      'http://localhost:3000',
+      /\.vercel\.app$/,
+      process.env.FRONTEND_URL,
+    ].filter(Boolean) as (string | RegExp)[],
+    credentials: true,
+  });
 
   const port = process.env.PORT ?? 3001;
   await app.listen(port);
