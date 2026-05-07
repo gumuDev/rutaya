@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Button, Typography, Spin, Empty } from 'antd';
+import { Button, Typography, Spin, Empty, Grid } from 'antd';
 import { ArrowRightOutlined, LeftOutlined, RightOutlined, UserOutlined } from '@ant-design/icons';
 import { useTranslations } from 'next-intl';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -10,14 +10,10 @@ import { searchSchedules } from '../services/reservations.service';
 import { ScheduleResult } from '../types/reservation.types';
 import { colors } from '@/shared/theme/colors';
 
-
 const { Text } = Typography;
+const { useBreakpoint } = Grid;
 
 const vehicleLabels: Record<string, string> = { trufi: 'Trufi', minibus: 'Minibus', bus: 'Bus' };
-
-function Divider() {
-  return <div style={{ width: 1, background: colors.border, alignSelf: 'stretch', margin: '0 4px' }} />;
-}
 
 function ScheduleCard({ s, origin, destination, date, passengers, onBook }: {
   s: ScheduleResult;
@@ -27,83 +23,117 @@ function ScheduleCard({ s, origin, destination, date, passengers, onBook }: {
   passengers: string;
   onBook: () => void;
 }) {
-  const formattedDate = date
-    ? dayjs(date + 'T12:00:00').format('ddd DD MMM')
-    : '';
+  const screens = useBreakpoint();
+  const isMobile = !screens.md;
+  const formattedDate = date ? dayjs(date + 'T12:00:00').format('ddd DD MMM') : '';
 
+  if (isMobile) {
+    return (
+      <div style={{
+        background: '#fff', borderRadius: 12,
+        border: `1px solid ${colors.border}`,
+        boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+        overflow: 'hidden',
+      }}>
+        {/* Top — empresa + precio */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', borderBottom: `1px solid ${colors.border}` }}>
+          <div>
+            <div style={{ fontSize: 15, fontWeight: 900, fontStyle: 'italic', color: colors.secondary }}>{s.companyName}</div>
+            <div style={{ fontSize: 11, color: colors.textSecondary }}>{vehicleLabels[s.vehicleType] ?? s.vehicleType}</div>
+          </div>
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ fontSize: 11, color: colors.textSecondary }}>Desde</div>
+            <div>
+              <span style={{ fontSize: 11, color: colors.secondary }}>Bs. </span>
+              <span style={{ fontSize: 24, fontWeight: 900, color: colors.secondary }}>{Number(s.price).toFixed(0)}</span>
+            </div>
+            <div style={{ fontSize: 11, color: colors.textSecondary }}>por persona</div>
+          </div>
+        </div>
+
+        {/* Middle — ruta + horario */}
+        <div style={{ padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 11, color: colors.textSecondary }}>Sale · {formattedDate}</div>
+            <div style={{ fontSize: 22, fontWeight: 800, color: colors.textPrimary }}>{s.departureTime}</div>
+            <div style={{ fontSize: 12, color: colors.textSecondary }}>📍 {origin}</div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+            <div style={{ width: 32, height: 1, background: colors.border }} />
+            <div style={{ fontSize: 16 }}>🚌</div>
+            <div style={{ width: 32, height: 1, background: colors.border }} />
+          </div>
+          <div style={{ flex: 1, textAlign: 'right' }}>
+            <div style={{ fontSize: 11, color: colors.textSecondary }}>Llega</div>
+            <div style={{ fontSize: 22, fontWeight: 800, color: colors.textPrimary }}>—</div>
+            <div style={{ fontSize: 12, color: colors.textSecondary }}>📍 {destination}</div>
+          </div>
+        </div>
+
+        {/* Bottom — disponibilidad + botón */}
+        <div style={{ padding: '10px 16px', background: colors.accent, borderTop: `1px solid #FED7AA`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ fontSize: 12, color: s.available <= 5 ? colors.error : colors.success }}>
+            <UserOutlined style={{ marginRight: 4 }} />{s.available} asientos disp.
+          </div>
+          <Button type="primary" size="middle" onClick={onBook}
+            style={{ background: colors.primary, borderColor: colors.primary, fontWeight: 700, borderRadius: 8 }}>
+            🎫 Reservar
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Desktop layout — horizontal
   return (
     <div style={{
-      background: '#fff',
-      borderRadius: 12,
+      background: '#fff', borderRadius: 12,
       border: `1px solid ${colors.border}`,
       boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-      display: 'flex',
-      alignItems: 'stretch',
-      overflow: 'hidden',
-      transition: 'box-shadow 0.2s',
+      display: 'flex', alignItems: 'stretch', overflow: 'hidden',
     }}>
       {/* Empresa */}
-      <div style={{ padding: '20px 20px', display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: 130 }}>
+      <div style={{ padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: 130 }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 20, fontWeight: 900, fontStyle: 'italic', color: colors.secondary, lineHeight: 1.1 }}>
-            {s.companyName}
-          </div>
-          <div style={{ fontSize: 11, color: colors.textSecondary, marginTop: 4 }}>
-            {vehicleLabels[s.vehicleType] ?? s.vehicleType}
-          </div>
+          <div style={{ fontSize: 20, fontWeight: 900, fontStyle: 'italic', color: colors.secondary, lineHeight: 1.1 }}>{s.companyName}</div>
+          <div style={{ fontSize: 11, color: colors.textSecondary, marginTop: 4 }}>{vehicleLabels[s.vehicleType] ?? s.vehicleType}</div>
         </div>
       </div>
 
-      <Divider />
+      <div style={{ width: 1, background: colors.border, alignSelf: 'stretch', margin: '0 4px' }} />
 
       {/* Salida */}
-      <div style={{ padding: '20px 20px', minWidth: 110 }}>
-        <div style={{ fontSize: 11, color: colors.textSecondary, marginBottom: 2 }}>Sale</div>
-        <div style={{ fontSize: 11, color: colors.textSecondary }}>{formattedDate}</div>
-        <div style={{ fontSize: 26, fontWeight: 800, color: colors.textPrimary, lineHeight: 1.1 }}>
-          {s.departureTime}
-        </div>
-        <div style={{ fontSize: 11, color: colors.textSecondary, marginTop: 4 }}>
-          📍 {origin}
-        </div>
+      <div style={{ padding: '20px', minWidth: 110 }}>
+        <div style={{ fontSize: 11, color: colors.textSecondary }}>Sale · {formattedDate}</div>
+        <div style={{ fontSize: 26, fontWeight: 800, color: colors.textPrimary, lineHeight: 1.1 }}>{s.departureTime}</div>
+        <div style={{ fontSize: 11, color: colors.textSecondary, marginTop: 4 }}>📍 {origin}</div>
       </div>
 
-      <Divider />
+      <div style={{ width: 1, background: colors.border, alignSelf: 'stretch', margin: '0 4px' }} />
 
-      {/* Centro — duración + icono */}
-      <div style={{ padding: '20px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minWidth: 100, gap: 6 }}>
+      {/* Centro */}
+      <div style={{ padding: '20px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minWidth: 80, gap: 4 }}>
         <div style={{ fontSize: 11, color: colors.textSecondary }}>Directo</div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <div style={{ width: 20, height: 1, background: colors.border }} />
-          <div style={{ fontSize: 20 }}>🚌</div>
-          <div style={{ width: 20, height: 1, background: colors.border }} />
-        </div>
-        <div style={{ fontSize: 11, color: colors.textSecondary }}>
-          {vehicleLabels[s.vehicleType]}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          <div style={{ width: 16, height: 1, background: colors.border }} />
+          <div style={{ fontSize: 18 }}>🚌</div>
+          <div style={{ width: 16, height: 1, background: colors.border }} />
         </div>
       </div>
 
-      <Divider />
+      <div style={{ width: 1, background: colors.border, alignSelf: 'stretch', margin: '0 4px' }} />
 
       {/* Llegada */}
-      <div style={{ padding: '20px 20px', minWidth: 110 }}>
-        <div style={{ fontSize: 11, color: colors.textSecondary, marginBottom: 2 }}>Llega</div>
-        <div style={{ fontSize: 11, color: colors.textSecondary }}>{formattedDate}</div>
-        <div style={{ fontSize: 26, fontWeight: 800, color: colors.textPrimary, lineHeight: 1.1 }}>
-          —
-        </div>
-        <div style={{ fontSize: 11, color: colors.textSecondary, marginTop: 4 }}>
-          📍 {destination}
-        </div>
+      <div style={{ padding: '20px', minWidth: 110 }}>
+        <div style={{ fontSize: 11, color: colors.textSecondary }}>Llega</div>
+        <div style={{ fontSize: 26, fontWeight: 800, color: colors.textPrimary, lineHeight: 1.1 }}>—</div>
+        <div style={{ fontSize: 11, color: colors.textSecondary, marginTop: 4 }}>📍 {destination}</div>
       </div>
 
-      <Divider />
+      <div style={{ width: 1, background: colors.border, alignSelf: 'stretch', margin: '0 4px' }} />
 
       {/* Disponibilidad */}
-      <div style={{ padding: '20px 16px', display: 'flex', flexDirection: 'column', justifyContent: 'center', minWidth: 100, gap: 4 }}>
-        <div style={{ fontSize: 13, fontWeight: 600, color: colors.secondary }}>
-          {vehicleLabels[s.vehicleType]}
-        </div>
+      <div style={{ padding: '20px 16px', display: 'flex', flexDirection: 'column', justifyContent: 'center', minWidth: 90, gap: 4 }}>
         <div style={{ fontSize: 12, color: s.available <= 5 ? colors.error : colors.success }}>
           <UserOutlined /> {s.available} disp.
         </div>
@@ -111,40 +141,21 @@ function ScheduleCard({ s, origin, destination, date, passengers, onBook }: {
 
       {/* Precio + botón */}
       <div style={{
-        background: colors.accent,
-        borderLeft: `1px solid #FED7AA`,
-        padding: '20px 20px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minWidth: 150,
-        gap: 10,
-        marginLeft: 'auto',
+        background: colors.accent, borderLeft: `1px solid #FED7AA`,
+        padding: '20px', display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center',
+        minWidth: 150, gap: 10, marginLeft: 'auto',
       }}>
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: 11, color: colors.textSecondary, marginBottom: 2 }}>Desde</div>
           <div>
             <span style={{ fontSize: 13, fontWeight: 600, color: colors.secondary }}>Bs. </span>
-            <span style={{ fontSize: 30, fontWeight: 900, color: colors.secondary, lineHeight: 1 }}>
-              {Number(s.price).toFixed(0)}
-            </span>
+            <span style={{ fontSize: 30, fontWeight: 900, color: colors.secondary, lineHeight: 1 }}>{Number(s.price).toFixed(0)}</span>
           </div>
           <div style={{ fontSize: 11, color: colors.textSecondary }}>por persona</div>
         </div>
-        <Button
-          type="primary"
-          block
-          size="middle"
-          style={{
-            background: colors.primary,
-            borderColor: colors.primary,
-            fontWeight: 700,
-            borderRadius: 8,
-            height: 38,
-          }}
-          onClick={onBook}
-        >
+        <Button type="primary" block size="middle" onClick={onBook}
+          style={{ background: colors.primary, borderColor: colors.primary, fontWeight: 700, borderRadius: 8, height: 38 }}>
           🎫 Reservar
         </Button>
       </div>
@@ -188,17 +199,15 @@ export function ScheduleResults() {
     <div style={{ minHeight: '100vh', background: colors.bg }}>
 
       {/* Header */}
-      <div style={{ background: colors.secondary, padding: '14px 24px' }}>
-        <div style={{ maxWidth: 960, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 13 }}>
-              <span style={{ color: '#fff', fontWeight: 700, fontSize: 16 }}>{origin}</span>
-            </Text>
-            <ArrowRightOutlined style={{ color: colors.primary }} />
-            <Text style={{ color: '#fff', fontWeight: 700, fontSize: 16 }}>{destination}</Text>
-            <Text style={{ color: 'rgba(255,255,255,0.6)', fontSize: 13 }}>· {passengers} pasajero{Number(passengers) > 1 ? 's' : ''}</Text>
+      <div style={{ background: colors.secondary, padding: '12px 16px' }}>
+        <div style={{ maxWidth: 960, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', minWidth: 0 }}>
+            <Text style={{ color: '#fff', fontWeight: 700, fontSize: 15, whiteSpace: 'nowrap' }}>{origin}</Text>
+            <ArrowRightOutlined style={{ color: colors.primary, flexShrink: 0 }} />
+            <Text style={{ color: '#fff', fontWeight: 700, fontSize: 15, whiteSpace: 'nowrap' }}>{destination}</Text>
+            <Text style={{ color: 'rgba(255,255,255,0.6)', fontSize: 12, whiteSpace: 'nowrap' }}>· {passengers} pax</Text>
           </div>
-          <Button size="small" ghost onClick={() => router.push('/')}>
+          <Button size="small" ghost onClick={() => router.push('/')} style={{ flexShrink: 0 }}>
             Modificar
           </Button>
         </div>
@@ -206,31 +215,31 @@ export function ScheduleResults() {
 
       {/* Date selector */}
       <div style={{ background: '#fff', borderBottom: `1px solid ${colors.border}` }}>
-        <div style={{ maxWidth: 960, margin: '0 auto', display: 'flex', alignItems: 'center', padding: '0 8px', overflowX: 'auto' }}>
-          <Button type="text" icon={<LeftOutlined />} onClick={() => selectedDate && navigateDate(selectedDate.subtract(1, 'day'))} />
+        <div style={{ maxWidth: 960, margin: '0 auto', display: 'flex', alignItems: 'center', padding: '0 4px', overflowX: 'auto' }}>
+          <Button type="text" icon={<LeftOutlined />} size="small" onClick={() => selectedDate && navigateDate(selectedDate.subtract(1, 'day'))} />
           {days.map((d) => {
             const isSelected = d.format('YYYY-MM-DD') === date;
             return (
               <button key={d.format('YYYY-MM-DD')} onClick={() => navigateDate(d)} style={{
-                padding: '10px 14px', border: 'none',
+                padding: '8px 10px', border: 'none',
                 borderBottom: isSelected ? `3px solid ${colors.primary}` : '3px solid transparent',
-                background: 'none', cursor: 'pointer', textAlign: 'center', minWidth: 60,
+                background: 'none', cursor: 'pointer', textAlign: 'center', minWidth: 48, flexShrink: 0,
               }}>
-                <div style={{ fontSize: 18, fontWeight: isSelected ? 800 : 400, color: isSelected ? colors.primary : colors.textPrimary }}>
+                <div style={{ fontSize: 16, fontWeight: isSelected ? 800 : 400, color: isSelected ? colors.primary : colors.textPrimary }}>
                   {d.format('D')}
                 </div>
-                <div style={{ fontSize: 10, color: isSelected ? colors.primary : colors.textSecondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                <div style={{ fontSize: 10, color: isSelected ? colors.primary : colors.textSecondary, textTransform: 'uppercase' }}>
                   {d.format('MMM')}
                 </div>
               </button>
             );
           })}
-          <Button type="text" icon={<RightOutlined />} onClick={() => selectedDate && navigateDate(selectedDate.add(1, 'day'))} />
+          <Button type="text" icon={<RightOutlined />} size="small" onClick={() => selectedDate && navigateDate(selectedDate.add(1, 'day'))} />
         </div>
       </div>
 
       {/* Results */}
-      <div style={{ maxWidth: 960, margin: '0 auto', padding: '20px 16px' }}>
+      <div style={{ maxWidth: 960, margin: '0 auto', padding: '16px 12px' }}>
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: 64 }}>
             <Spin size="large" />
