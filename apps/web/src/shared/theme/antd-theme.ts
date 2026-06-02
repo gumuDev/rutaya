@@ -14,7 +14,7 @@ export const antdTheme: ThemeConfig = {
     colorText: colors.textPrimary,
     colorTextSecondary: colors.textSecondary,
     borderRadius: 8,
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
   },
   components: {
     Button: {
@@ -23,9 +23,10 @@ export const antdTheme: ThemeConfig = {
       borderRadius: 8,
     },
     Menu: {
-      itemSelectedBg: '#FFF7ED',
-      itemSelectedColor: colors.primary,
+      itemSelectedBg: colors.accent,
+      itemSelectedColor: colors.navy,
       itemHoverColor: colors.primary,
+      itemHoverBg: colors.bgSection,
     },
     Layout: {
       siderBg: colors.bgCard,
@@ -33,6 +34,14 @@ export const antdTheme: ThemeConfig = {
     },
     Statistic: {
       contentFontSize: 24,
+    },
+    Steps: {
+      colorPrimary: colors.primary,
+    },
+    Tabs: {
+      inkBarColor: colors.primary,
+      itemSelectedColor: colors.primary,
+      itemHoverColor: colors.primary,
     },
   },
 };

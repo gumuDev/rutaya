@@ -1,9 +1,11 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 
 const BUCKET = 'images';
 
 @Injectable()
 export class UploadService {
+  private readonly logger = new Logger(UploadService.name);
+
   async upload(file: Express.Multer.File): Promise<string> {
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
@@ -30,6 +32,7 @@ export class UploadService {
 
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
+      this.logger.error(`Supabase upload failed [${res.status}]: ${JSON.stringify(err)}`);
       throw new InternalServerErrorException(err.message ?? 'upload_failed');
     }
 

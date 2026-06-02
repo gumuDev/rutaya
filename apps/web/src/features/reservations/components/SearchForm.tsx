@@ -1,7 +1,7 @@
 'use client';
 
-import { Form, AutoComplete, DatePicker, InputNumber, Button, Typography, Tabs } from 'antd';
-import { SwapOutlined, SearchOutlined, EnvironmentOutlined, FileTextOutlined, QuestionCircleOutlined, PhoneOutlined } from '@ant-design/icons';
+import { Form, AutoComplete, DatePicker, InputNumber, Button, Grid } from 'antd';
+import { SwapOutlined, SearchOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -9,41 +9,59 @@ import dayjs from '@/shared/lib/dayjs';
 import { colors } from '@/shared/theme/colors';
 import { useCities } from '../hooks/useCities';
 
-const { Title, Text } = Typography;
+const { useBreakpoint } = Grid;
 
 // ─── Navbar ─────────────────────────────────────────────────────────────────
 
 function Navbar() {
-  return (
-    <nav style={{
-      position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
-      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      padding: '16px 32px',
-    }}>
-      {/* Logo */}
-      <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>
-        <span style={{ color: colors.primary }}>Ruta</span>Ya
-      </div>
+  const screens = useBreakpoint();
+  const isMobile = !screens.md;
 
-      {/* Links */}
-      <div style={{ display: 'flex', gap: 28, alignItems: 'center' }}>
-        <a href="/recover" style={{ color: 'rgba(255,255,255,0.85)', fontSize: 14, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6 }}>
-          <FileTextOutlined /> Mis tickets
+  return (
+    <header style={{
+      position: 'sticky', top: 0, zIndex: 50,
+      background: '#ffffff',
+      borderBottom: `1px solid ${colors.border}`,
+      boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+    }}>
+      <nav style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '0 24px', maxWidth: 1280, margin: '0 auto', height: 80,
+      }}>
+        {/* Logo */}
+        <a href="/" style={{ textDecoration: 'none' }}>
+          <span style={{ fontSize: 24, fontWeight: 900, color: colors.primary, letterSpacing: -0.5, lineHeight: 1 }}>
+            RutaYa
+          </span>
         </a>
-        <a href="#como-funciona" style={{ color: 'rgba(255,255,255,0.85)', fontSize: 14, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6 }}>
-          <QuestionCircleOutlined /> ¿Cómo funciona?
-        </a>
-        <a href="#contacto" style={{ color: 'rgba(255,255,255,0.85)', fontSize: 14, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6 }}>
-          <PhoneOutlined /> Contacto
-        </a>
+
+        {/* Links — desktop */}
+        {!isMobile && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 40 }}>
+            <a href="/" style={{
+              color: colors.textSecondary, fontSize: 15, fontWeight: 700, textDecoration: 'none',
+              borderBottom: `2px solid ${colors.accent}`, paddingBottom: 2,
+            }}>Buscar</a>
+            <a href="/login" style={{ color: colors.textSecondary, fontSize: 15, textDecoration: 'none' }}>
+              Para Empresas
+            </a>
+            <a href="/recover" style={{ color: colors.textSecondary, fontSize: 15, textDecoration: 'none' }}>
+              Mis Viajes
+            </a>
+          </div>
+        )}
+
+        {/* CTA */}
         <a href="/login" style={{
-          background: colors.primary, color: '#fff', fontSize: 13, fontWeight: 700,
-          padding: '6px 16px', borderRadius: 8, textDecoration: 'none',
+          background: colors.accent, color: colors.navy,
+          fontSize: 14, fontWeight: 700,
+          padding: '10px 20px', borderRadius: 8, textDecoration: 'none',
+          transition: 'background 0.2s',
         }}>
-          Empresas
+          {isMobile ? 'Ingresar' : 'Iniciar Sesión/Registrarse'}
         </a>
-      </div>
-    </nav>
+      </nav>
+    </header>
   );
 }
 
@@ -51,11 +69,12 @@ function Navbar() {
 
 function SearchCard() {
   const router = useRouter();
-  const [tripType, setTripType] = useState<'one_way' | 'round_trip'>('one_way');
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
   const { options: originOptions } = useCities(origin);
   const { options: destinationOptions } = useCities(destination);
+  const screens = useBreakpoint();
+  const isMobile = !screens.md;
 
   function handleSwap() {
     setOrigin(destination);
@@ -64,137 +83,184 @@ function SearchCard() {
 
   function handleSubmit(values: { date: dayjs.Dayjs; passengers: number }) {
     const date = values.date.format('YYYY-MM-DD');
-    router.push(`/search?origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}&date=${date}&passengers=${values.passengers ?? 1}`);
+    router.push(
+      `/search?origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}&date=${date}&passengers=${values.passengers ?? 1}`
+    );
   }
 
-  const labelStyle: React.CSSProperties = { fontSize: 10, fontWeight: 700, color: '#64748b', letterSpacing: 1, textTransform: 'uppercase' };
+  const labelStyle: React.CSSProperties = {
+    fontSize: 12, fontWeight: 500, color: colors.textSecondary,
+    letterSpacing: '0.01em', display: 'block', marginBottom: 4,
+  };
 
   return (
-    <div style={{ background: '#fff', borderRadius: 16, padding: '20px 24px', boxShadow: '0 8px 40px rgba(0,0,0,0.22)', width: '100%', maxWidth: 820 }}>
-
-      {/* Trip type tabs */}
-      <Tabs
-        activeKey={tripType}
-        onChange={(k) => setTripType(k as 'one_way' | 'round_trip')}
-        size="small"
-        style={{ marginBottom: 16 }}
-        items={[
-          { key: 'one_way', label: '→ Solo ida' },
-          { key: 'round_trip', label: '⇄ Ida y vuelta' },
-        ]}
-      />
-
+    <div style={{
+      background: 'rgba(255,255,255,0.96)',
+      backdropFilter: 'blur(8px)',
+      borderRadius: 12,
+      padding: isMobile ? '20px 16px' : '24px 32px',
+      boxShadow: '0 8px 40px rgba(0,0,0,0.18)',
+      width: '100%',
+      maxWidth: 900,
+      border: '1px solid rgba(255,255,255,0.2)',
+    }}>
       <Form layout="vertical" onFinish={handleSubmit} requiredMark={false}>
-        <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end', flexWrap: 'wrap' }}>
-
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: isMobile ? '1fr' : '1fr auto 1fr 1fr auto',
+          gap: 12,
+          alignItems: 'flex-end',
+        }}>
           {/* Origen */}
-          <div style={{ flex: '1 1 160px', minWidth: 130 }}>
-            <div style={{ marginBottom: 0 }}>
-              <label style={labelStyle}>Origen</label>
-              <AutoComplete
-                value={origin}
-                options={originOptions}
-                onSearch={setOrigin}
-                onSelect={(v: string) => setOrigin(v)}
-                onChange={(v: string) => setOrigin(v)}
-                filterOption={false}
-                size="large"
-                style={{ width: '100%', marginTop: 4 }}
-                placeholder="Ciudad de origen"
-              />
-            </div>
+          <div>
+            <label style={labelStyle}>
+              <EnvironmentOutlined style={{ marginRight: 4, color: colors.primary }} />
+              Origen
+            </label>
+            <AutoComplete
+              value={origin}
+              options={originOptions}
+              onSearch={setOrigin}
+              onSelect={(v: string) => setOrigin(v)}
+              onChange={(v: string) => setOrigin(v)}
+              filterOption={false}
+              size="large"
+              style={{ width: '100%' }}
+              placeholder="Ciudad de salida"
+            />
           </div>
 
           {/* Swap */}
-          <div style={{ paddingBottom: 4 }}>
-            <Button type="text" icon={<SwapOutlined style={{ fontSize: 16, color: colors.secondary }} />} onClick={handleSwap}
-              style={{ border: `1px solid ${colors.border}`, borderRadius: 8, width: 38, height: 38, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}
+          <div style={{ paddingBottom: 1, display: 'flex', justifyContent: 'center' }}>
+            <Button
+              type="text"
+              icon={<SwapOutlined style={{ fontSize: 16, color: colors.primary }} />}
+              onClick={handleSwap}
+              style={{
+                border: `1px solid ${colors.border}`, borderRadius: 8,
+                width: 40, height: 40,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0,
+              }}
             />
           </div>
 
           {/* Destino */}
-          <div style={{ flex: '1 1 160px', minWidth: 130 }}>
-            <div style={{ marginBottom: 0 }}>
-              <label style={labelStyle}>Destino</label>
-              <AutoComplete
-                value={destination}
-                options={destinationOptions}
-                onSearch={setDestination}
-                onSelect={(v: string) => setDestination(v)}
-                onChange={(v: string) => setDestination(v)}
-                filterOption={false}
-                size="large"
-                style={{ width: '100%', marginTop: 4 }}
-                placeholder="Ciudad de destino"
-              />
-            </div>
+          <div>
+            <label style={labelStyle}>
+              <EnvironmentOutlined style={{ marginRight: 4, color: colors.primary }} />
+              Destino
+            </label>
+            <AutoComplete
+              value={destination}
+              options={destinationOptions}
+              onSearch={setDestination}
+              onSelect={(v: string) => setDestination(v)}
+              onChange={(v: string) => setDestination(v)}
+              filterOption={false}
+              size="large"
+              style={{ width: '100%' }}
+              placeholder="A dónde vas"
+            />
           </div>
 
-          {/* Fecha ida */}
-          <div style={{ flex: '1 1 130px', minWidth: 120 }}>
-            <Form.Item name="date" label={<span style={labelStyle}>Salida</span>} rules={[{ required: true }]} style={{ marginBottom: 0 }}>
-              <DatePicker size="large" style={{ width: '100%' }} format="D MMM YYYY" disabledDate={(d) => d.isBefore(dayjs(), 'day')} placeholder="Fecha" />
-            </Form.Item>
-          </div>
+          {/* Fecha */}
+          <Form.Item
+            name="date"
+            label={<span style={labelStyle}>Fecha de Salida</span>}
+            rules={[{ required: true, message: 'Selecciona una fecha' }]}
+            style={{ marginBottom: 0 }}
+          >
+            <DatePicker
+              size="large"
+              style={{ width: '100%' }}
+              format="D MMM YYYY"
+              disabledDate={(d) => d.isBefore(dayjs(), 'day')}
+              placeholder="Seleccionar fecha"
+            />
+          </Form.Item>
 
-          {/* Fecha vuelta (solo ida y vuelta) */}
-          {tripType === 'round_trip' && (
-            <div style={{ flex: '1 1 130px', minWidth: 120 }}>
-              <Form.Item name="returnDate" label={<span style={labelStyle}>Vuelta</span>} style={{ marginBottom: 0 }}>
-                <DatePicker size="large" style={{ width: '100%' }} format="D MMM YYYY" disabledDate={(d) => d.isBefore(dayjs(), 'day')} placeholder="Fecha" />
-              </Form.Item>
-            </div>
-          )}
-
-          {/* Pasajeros */}
-          <div style={{ flex: '0 1 100px', minWidth: 88 }}>
-            <Form.Item name="passengers" label={<span style={labelStyle}>Pasajeros</span>} style={{ marginBottom: 0 }} initialValue={1}>
-              <InputNumber size="large" min={1} max={20} style={{ width: '100%' }} prefix="👤" />
-            </Form.Item>
-          </div>
-
-          {/* Botón */}
-          <div style={{ flex: '0 1 110px', minWidth: 100, paddingBottom: 1 }}>
-            <Button type="primary" htmlType="submit" size="large" icon={<SearchOutlined />}
-              style={{ width: '100%', height: 40, borderRadius: 8, fontWeight: 700, background: colors.primary, borderColor: colors.primary }}>
-              Buscar
+          {/* Botón buscar */}
+          <div style={{ paddingBottom: 1 }}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              size="large"
+              icon={<SearchOutlined />}
+              style={{
+                width: '100%', height: 40,
+                background: colors.accent, borderColor: colors.accent,
+                color: colors.navy, fontWeight: 700, borderRadius: 8,
+              }}
+            >
+              {!isMobile && 'Buscar Pasajes'}
             </Button>
           </div>
-
         </div>
       </Form>
+
+      <div style={{ marginTop: 12, textAlign: 'center' }}>
+        <a href="/recover" style={{ color: 'rgba(26,28,30,0.5)', fontSize: 13, textDecoration: 'none' }}>
+          ¿Ya tienes una reserva? Recupera tu ticket →
+        </a>
+      </div>
     </div>
   );
 }
 
-// ─── How it works ─────────────────────────────────────────────────────────────
+// ─── Why Choose Us ────────────────────────────────────────────────────────────
 
-const STEPS = [
-  { icon: '🔍', title: 'Busca tu ruta', desc: 'Ingresa origen, destino, fecha y número de pasajeros.' },
-  { icon: '🚌', title: 'Elige tu viaje', desc: 'Selecciona el horario y empresa que más te convenga.' },
-  { icon: '💳', title: 'Paga fácil', desc: 'Transfiere o escanea el QR de la empresa y sube tu comprobante.' },
-  { icon: '🎫', title: 'Recibe tu ticket', desc: 'Guarda tu ticket digital y preséntalo al abordar.' },
+const WHY_ITEMS = [
+  {
+    icon: '✓',
+    title: 'Confianza',
+    desc: 'Operadores verificados y pagos seguros para cada viaje por el Altiplano.',
+  },
+  {
+    icon: '◎',
+    title: 'Soporte 24/7',
+    desc: 'Nuestro equipo dedicado está listo para asistirte en cualquier momento.',
+  },
+  {
+    icon: '$',
+    title: 'Mejores Precios',
+    desc: 'Sin cargos ocultos. Las tarifas más competitivas para rutas de lujo y expresas.',
+  },
 ];
 
-function HowItWorks() {
+function WhyUs() {
   return (
-    <section id="como-funciona" style={{ background: '#fff', padding: '72px 24px' }}>
-      <div style={{ maxWidth: 900, margin: '0 auto' }}>
+    <section style={{ background: colors.bg, padding: '80px 24px' }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 48 }}>
-          <Title level={2} style={{ color: colors.secondary, margin: 0 }}>¿Cómo funciona?</Title>
-          <Text type="secondary">Reserva tu pasaje en 4 simples pasos</Text>
+          <h2 style={{ fontSize: 32, fontWeight: 700, color: colors.primary, margin: '0 0 12px', letterSpacing: -0.3 }}>
+            ¿Por qué elegirnos?
+          </h2>
+          <div style={{ height: 4, width: 56, background: colors.accent, margin: '0 auto', borderRadius: 99 }} />
         </div>
-        <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', justifyContent: 'center' }}>
-          {STEPS.map((s, i) => (
-            <div key={i} style={{ flex: '1 1 180px', maxWidth: 200, textAlign: 'center' }}>
-              <div style={{ width: 64, height: 64, borderRadius: '50%', background: colors.accent, border: `2px solid ${colors.primary}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, margin: '0 auto 16px' }}>
-                {s.icon}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 24 }}>
+          {WHY_ITEMS.map((item) => (
+            <div key={item.title} style={{
+              background: colors.bgCard, padding: 32, borderRadius: 12,
+              border: `1px solid ${colors.border}`,
+              boxShadow: '0 2px 8px rgba(0,35,74,0.04)',
+              textAlign: 'center',
+              transition: 'box-shadow 0.2s',
+            }}>
+              <div style={{
+                width: 64, height: 64, borderRadius: '50%',
+                background: 'rgba(0,56,112,0.08)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                margin: '0 auto 20px',
+                fontSize: 24, fontWeight: 900, color: colors.primary,
+              }}>
+                {item.icon}
               </div>
-              <div style={{ width: 24, height: 24, borderRadius: '50%', background: colors.primary, color: '#fff', fontSize: 12, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '-8px auto 12px' }}>
-                {i + 1}
-              </div>
-              <Text strong style={{ display: 'block', color: colors.secondary, marginBottom: 6 }}>{s.title}</Text>
-              <Text type="secondary" style={{ fontSize: 13 }}>{s.desc}</Text>
+              <h3 style={{ fontSize: 20, fontWeight: 600, color: colors.textPrimary, margin: '0 0 10px' }}>
+                {item.title}
+              </h3>
+              <p style={{ fontSize: 15, color: colors.textSecondary, lineHeight: 1.6, margin: 0 }}>
+                {item.desc}
+              </p>
             </div>
           ))}
         </div>
@@ -203,26 +269,167 @@ function HowItWorks() {
   );
 }
 
-// ─── Footer / Contacto ────────────────────────────────────────────────────────
+// ─── Popular Routes ──────────────────────────────────────────────────────────
+
+const ROUTES = [
+  {
+    label: 'Expreso Diario',
+    labelColor: colors.accent,
+    labelText: colors.navy,
+    title: 'La Paz a Cochabamba',
+    info: 'Desde Bs. 80 · 7h de viaje',
+    img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80',
+    span: 8,
+  },
+  {
+    label: 'Lujo Semi-Cama',
+    labelColor: '#770015',
+    labelText: '#ff7778',
+    title: 'Santa Cruz a Sucre',
+    info: 'Desde Bs. 120 · 12h de viaje',
+    img: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=800&q=80',
+    span: 4,
+    rowSpan: 2,
+  },
+  {
+    label: '',
+    labelColor: '',
+    labelText: '',
+    title: 'Potosí a Uyuni',
+    info: 'Desde Bs. 50 · 4h de viaje',
+    img: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80',
+    span: 4,
+  },
+  {
+    label: '',
+    labelColor: '',
+    labelText: '',
+    title: 'Oruro a La Paz',
+    info: 'Desde Bs. 40 · 3h de viaje',
+    img: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80',
+    span: 4,
+  },
+];
+
+function PopularRoutes() {
+  const screens = useBreakpoint();
+  const isMobile = !screens.md;
+
+  return (
+    <section style={{ padding: '80px 24px', background: colors.bgSection }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 40, flexWrap: 'wrap', gap: 12 }}>
+          <div>
+            <h2 style={{ fontSize: 32, fontWeight: 700, color: colors.primary, margin: '0 0 6px', letterSpacing: -0.3 }}>
+              Rutas Populares
+            </h2>
+            <p style={{ fontSize: 15, color: colors.textSecondary, margin: 0 }}>
+              Explora las conexiones más frecuentes en toda Bolivia.
+            </p>
+          </div>
+          <a href="/search" style={{ color: colors.primary, fontWeight: 700, fontSize: 14, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
+            Ver todas las rutas →
+          </a>
+        </div>
+
+        {isMobile ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {ROUTES.map((r) => (
+              <RouteCard key={r.title} route={r} />
+            ))}
+          </div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gridTemplateRows: 'repeat(2, 280px)', gap: 16 }}>
+            <div style={{ gridColumn: '1 / 9', gridRow: '1', position: 'relative', borderRadius: 12, overflow: 'hidden', border: `1px solid ${colors.border}` }}>
+              <RouteCardInner route={ROUTES[0]} />
+            </div>
+            <div style={{ gridColumn: '9 / 13', gridRow: '1 / 3', position: 'relative', borderRadius: 12, overflow: 'hidden', border: `1px solid ${colors.border}` }}>
+              <RouteCardInner route={ROUTES[1]} />
+            </div>
+            <div style={{ gridColumn: '1 / 7', gridRow: '2', position: 'relative', borderRadius: 12, overflow: 'hidden', border: `1px solid ${colors.border}` }}>
+              <RouteCardInner route={ROUTES[2]} />
+            </div>
+            <div style={{ gridColumn: '7 / 9', gridRow: '2', position: 'relative', borderRadius: 12, overflow: 'hidden', border: `1px solid ${colors.border}` }}>
+              <RouteCardInner route={ROUTES[3]} />
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function RouteCardInner({ route }: { route: typeof ROUTES[0] }) {
+  return (
+    <>
+      <img
+        src={route.img}
+        alt={route.title}
+        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+      />
+      <div style={{
+        position: 'absolute', inset: 0,
+        background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.1) 60%, transparent 100%)',
+        padding: 20, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
+      }}>
+        {route.label && (
+          <span style={{
+            background: route.labelColor, color: route.labelText,
+            fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 99,
+            alignSelf: 'flex-start', marginBottom: 8,
+          }}>
+            {route.label}
+          </span>
+        )}
+        <h4 style={{ color: '#fff', fontSize: 18, fontWeight: 600, margin: '0 0 4px', lineHeight: 1.2 }}>{route.title}</h4>
+        <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 13, margin: 0 }}>{route.info}</p>
+      </div>
+    </>
+  );
+}
+
+function RouteCard({ route }: { route: typeof ROUTES[0] }) {
+  return (
+    <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', height: 180, border: `1px solid ${colors.border}` }}>
+      <RouteCardInner route={route} />
+    </div>
+  );
+}
+
+// ─── Footer ──────────────────────────────────────────────────────────────────
 
 function Footer() {
+  const links = [
+    { label: 'Sobre Nosotros', href: '#' },
+    { label: 'Términos de Servicio', href: '#' },
+    { label: 'Política de Privacidad', href: '#' },
+    { label: 'Centro de Ayuda', href: '#' },
+    { label: 'Contacto', href: '#' },
+  ];
+
   return (
-    <footer id="contacto" style={{ background: colors.secondary, color: 'rgba(255,255,255,0.7)', padding: '40px 24px', textAlign: 'center' }}>
-      <div style={{ maxWidth: 900, margin: '0 auto' }}>
-        <div style={{ fontSize: 20, fontWeight: 900, color: '#fff', marginBottom: 8 }}>
-          <span style={{ color: colors.primary }}>Ruta</span>Ya
+    <footer style={{ background: colors.primary, borderTop: `1px solid rgba(255,255,255,0.1)` }}>
+      <div style={{
+        maxWidth: 1280, margin: '0 auto', padding: '48px 24px',
+        display: 'flex', flexDirection: 'column', gap: 24,
+        alignItems: 'center',
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', marginBottom: 6 }}>RutaYa</div>
+          <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 14, margin: 0, maxWidth: 320 }}>
+            Conectando el corazón de Sudamérica con transporte confiable y programado.
+          </p>
         </div>
-        <Text style={{ color: 'rgba(255,255,255,0.6)', fontSize: 13 }}>
-          Plataforma de reserva de pasajes interprovinciales en Bolivia
-        </Text>
-        <div style={{ marginTop: 20, display: 'flex', gap: 24, justifyContent: 'center', flexWrap: 'wrap' }}>
-          <a href="/recover" style={{ color: 'rgba(255,255,255,0.7)', fontSize: 13, textDecoration: 'none' }}>Recuperar ticket</a>
-          <a href="/login" style={{ color: 'rgba(255,255,255,0.7)', fontSize: 13, textDecoration: 'none' }}>Acceso empresas</a>
-          <a href="/register" style={{ color: 'rgba(255,255,255,0.7)', fontSize: 13, textDecoration: 'none' }}>Registrar empresa</a>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24, justifyContent: 'center' }}>
+          {links.map((l) => (
+            <a key={l.label} href={l.href} style={{ color: 'rgba(255,255,255,0.7)', fontSize: 14, textDecoration: 'none' }}>
+              {l.label}
+            </a>
+          ))}
         </div>
-        <div style={{ marginTop: 24, fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>
-          © {new Date().getFullYear()} RutaYa · Bolivia
-        </div>
+        <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 12, margin: 0 }}>
+          © {new Date().getFullYear()} RutaYa. Todos los derechos reservados. Transporte de precisión por los Andes.
+        </p>
       </div>
     </footer>
   );
@@ -236,51 +443,53 @@ export function SearchForm() {
 
   return (
     <div>
+      <Navbar />
+
       {/* Hero */}
-      <div style={{
+      <section style={{
         position: 'relative',
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '72px 16px 48px',
-        background: `linear-gradient(135deg, ${colors.secondary} 0%, #0f2440 60%, #1a3a6b 100%)`,
+        minHeight: 680,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
         overflow: 'hidden',
       }}>
-        {/* Decorative circles */}
-        <div style={{ position: 'absolute', top: -80, right: -80, width: 360, height: 360, borderRadius: '50%', background: 'rgba(249,115,22,0.08)', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', bottom: -60, left: -60, width: 280, height: 280, borderRadius: '50%', background: 'rgba(249,115,22,0.06)', pointerEvents: 'none' }} />
-
-        <Navbar />
-
-        {/* Hero text */}
-        <div style={{ textAlign: 'center', marginBottom: 24, zIndex: 1 }}>
-          <Title style={{ color: '#fff', fontSize: 42, margin: '0 0 8px', lineHeight: 1.15 }}>
-            Tu viaje empieza <span style={{ color: colors.primary }}>aquí</span>
-          </Title>
-          <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 16 }}>
-            Reserva pasajes interprovinciales en Bolivia de forma rápida y segura
-          </Text>
+        {/* Background image */}
+        <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+          <img
+            src="https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=1600&q=85"
+            alt="Salar de Uyuni Bolivia"
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+          />
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: 'linear-gradient(to bottom, rgba(0,35,74,0.45) 0%, rgba(0,35,74,0.72) 100%)',
+          }} />
         </div>
 
-        {/* Search card */}
-        <div style={{ zIndex: 1, width: '100%', display: 'flex', justifyContent: 'center' }}>
-          <SearchCard />
+        {/* Content */}
+        <div style={{
+          position: 'relative', zIndex: 1,
+          width: '100%', maxWidth: 1280, margin: '0 auto',
+          padding: '80px 24px',
+          textAlign: 'center',
+        }}>
+          <h1 style={{
+            fontSize: 'clamp(32px, 5vw, 56px)',
+            fontWeight: 700, color: '#fff', margin: '0 0 40px',
+            lineHeight: 1.1, letterSpacing: -0.02,
+            maxWidth: 700, marginLeft: 'auto', marginRight: 'auto',
+            textShadow: '0 2px 8px rgba(0,0,0,0.3)',
+          }}>
+            Transporte de Precisión por los Andes
+          </h1>
+
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <SearchCard />
+          </div>
         </div>
+      </section>
 
-        {/* Quick link */}
-        <div style={{ marginTop: 20, zIndex: 1 }}>
-          <a href="/recover" style={{ color: 'rgba(255,255,255,0.6)', fontSize: 13, textDecoration: 'underline' }}>
-            ¿Ya tienes una reserva? Recupera tu ticket →
-          </a>
-        </div>
-      </div>
-
-      {/* How it works */}
-      <HowItWorks />
-
-      {/* Footer */}
+      <WhyUs />
+      <PopularRoutes />
       <Footer />
     </div>
   );

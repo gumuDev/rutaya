@@ -3,7 +3,10 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { ConfigProvider } from "antd";
+import { Inter } from "next/font/google";
 import { antdTheme } from "@/shared/theme/antd-theme";
+
+const inter = Inter({ subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
   title: "RutaYa — Reserva tu pasaje",
@@ -21,7 +24,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#F97316",
+  themeColor: "#003870",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -34,7 +37,7 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale}>
+    <html lang={locale} className={inter.className}>
       <head>
         <meta name="application-name" content="RutaYa" />
         <meta name="mobile-web-app-capable" content="yes" />
@@ -43,7 +46,7 @@ export default async function RootLayout({
         <meta name="apple-mobile-web-app-title" content="RutaYa" />
         <link rel="apple-touch-icon" href="/icons/icon-192.svg" />
       </head>
-      <body style={{ margin: 0, background: '#F8FAFC' }}>
+      <body style={{ margin: 0, background: '#f9f9fc' }}>
         <NextIntlClientProvider messages={messages}>
           <AntdRegistry>
             <ConfigProvider theme={antdTheme}>
